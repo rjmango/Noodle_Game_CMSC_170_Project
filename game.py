@@ -25,16 +25,19 @@ def counter_Preparation(diffi,counters):					#Prepare number of counters based o
 		x = 3
 		for k in range(0,x):
 			counters[letters[k]] = [0,""]
+			aiCounters[letters[k]] = [0,""]
 		return 1
 	elif diffi == "MEDIUM":
 		x = 4
 		for k in range(0,x):
 			counters[letters[k]] = [0,""]
+			aiCounters[letters[k]] = [0,""]
 		return 2
 	elif diffi == "HARD":
 		x = 5
 		for k in range(0,x):
 			counters[letters[k]] = [0,""]
+			aiCounters[letters[k]] = [0,""]
 		return 3
 
 def Patience(x):											#Returns a number of patience for each order depending on the preference
@@ -95,9 +98,10 @@ def print_Subcounter(subcounter):								#Prints the counter
 	left = ""
 	right = ""
 	for counter in subcounter:								#Prints customer preference or when empty
-		v = counters[counter]
-		left += f"{Noodle_Preference[v[0]]:^25}"
-		right += f"{Noodle_Preference[v[0]]:^25}"
+		playerValue = counters[counter]
+		aiValue = aiCounters[counter]
+		left += f"{Noodle_Preference[playerValue[0]]:^25}"
+		right += f"{Noodle_Preference[aiValue[0]]:^25}"
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))
 	
 	out = ""
@@ -115,13 +119,16 @@ def print_Subcounter(subcounter):								#Prints the counter
 	left = ""
 	right = ""
 	for counter in subcounter:								#Prints patience when there is a customer
-		v = counters[counter]
-		if v[0] == 0:									
+		playerValue = counters[counter]
+		aiValue = aiCounters[counter]
+		if playerValue[0] == 0:									
 			left += f"{'':^25}"
-			right += f"{'':^25}"
 		else:
-			left += f"{'Patience: '+str(v[1]):^25}"
-			right += f"{'Patience: '+str(v[1]):^25}"
+			left += f"{'Patience: '+str(playerValue[1]):^25}"
+		if aiValue[0] == 0:
+			right += f"{'':^25}"
+		else:			
+			right += f"{'Patience: '+str(aiValue[1]):^25}"
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))	
 	print_NextLine()
 		
@@ -171,9 +178,10 @@ def print_Subtray(subtray):										#Prints each tray
 	left = ""
 	right = ""
 	for tray in subtray:								#Visual design for each counter
-		Doneness = Noodle_Doneness[str(trays[tray][1])]
-		left += f"{Doneness:^25}"
-		right += f"{Doneness:^25}"
+		playerDoneness = Noodle_Doneness[str(trays[tray][1])]
+		aiDoneness = Noodle_Doneness[str(aiTrays[tray][1])]
+		left += f"{playerDoneness:^25}"
+		right += f"{aiDoneness:^25}"
 	
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))
 
@@ -406,6 +414,7 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 			increment_Tray(trays)															#Increments the tray
 
 			counter_System(counters,playerVals)												#Carries out the function for the system of counters
+			counter_System(aiCounters,aiVals)												#Carries out the function for the system of counters
 
 			input("\nPress ENTER to continue.")
 
