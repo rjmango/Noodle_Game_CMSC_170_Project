@@ -1,0 +1,73 @@
+------------------------------------------------------------START OF TUTORIAL------------------------------------------------------------------------
+Welcome to the Noodle Shop Game!
+The Noodle Shop Game is a turn-based game where you serve noodles for customers!
+Problem is, your customers have varying preferences when it comes to Noodle Doneness, as varying patience Levels.
+Noodle Doneness can be:
+Dipped -> Extra Firm -> Firm -> Regular -> Soft -> Extra Soft -> Overcooked
+The noodle shop has at least 3 counters, depending on the difficulty you chose.
+
+Counters:
+
+	-----------		-----------		-----------
+	 Counter A		 Counter B		 Counter C
+
+There are THREE counters in EASY, FOUR counters in MEDIUM, and FIVE counters in HARD.
+Your final score is also multiplied based on the difficulty.
+Multiplied by ONE in EASY, multiplied by TWO in MEDIUM, and multiplied by THREE in HARD.
+In the game, you have a TRAY, which can hold up to FIVE noodle bowls.
+
+Tray:
+Slot A: Empty
+Slot B: Dipped
+Slot C: Overcooked
+Slot D: Firm
+Slot E: Empty
+
+In each turn, there is a chance that a customer will appear on an empty counter.
+Once a customer appears, they will show their requested Noodle Doneness and there current Patience!
+
+Counters:
+
+	-----------		-----------		-----------
+	 Counter A		 Counter B		 Counter C
+	 Overcooked
+	 Patience: 5
+
+At each turn, you have a couple of actions that you can take:
+1) You can PLACE a noodle bowl on a tray's slot by choosing which tray to input.
+
+Enter an empty tray slot: A
+
+Tray
+Slot A: Dipped
+Slot B: Empty
+Slot C: Empty
+Slot D: Empty
+Slot E: Empty
+
+2) You can WAIT, which will skip a turn. 
+Once a noodle bowl is placed on the tray, the noodles will start progressing through the Noodle Doneness from Dipped to Overcooked.
+Once the noodles become Overcooked, they will stay overcooked. All seated customers also lose ONE patience.
+The customer will leave the counter once their patience will reach zero whill will render the order unsucessful.
+
+3) Lastly, you can SERVE by inputing the slot which contains your desired noodle bowl and input the the counter slot to which you will serve the bowl.
+Once the order is served, the customer will leave the counter.
+
+Enter a tray slot: A
+Enter a counter slot: B
+Successful Order!
+
+Each successful order is worth 35 points and each consective succesful order adds ONE to the streak.
+The streak multiplies the score by 1.15 depending on the number of streak.
+Once an order is unsuccesful or a customer walks out the counter, the streak will go back to ZERO.
+Each round has a set number of customers, with a quota for successful number of orders which varies per difficulty.
+50% of custumers in EASY, 75% of customers in MEDIUM, and 100% of customers in HARD.
+
+Score: 35			Streak: 1
+
+Customers to Serve: 9		Successful Orders: 1
+Total Customers: 10		Quota for the round: 5
+
+If the player passes the quota, the next round starts. Otherwise, you lose the game. On a new round the number of customers increases by FIVE.
+
+-------------------------------------------------------------END OF TUTORIAL-------------------------------------------------------------------------
