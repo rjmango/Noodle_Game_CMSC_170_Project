@@ -289,7 +289,7 @@ def serve(trays,counters,vals,quota,streak):				#Function for serving
 		print("\nOrder Unsuccesful")
 		if vals["score"] > 10:													#Score cannot be negative
 			vals["score"] -= 10													#Subtracts score when order unsuccesful
-		streak["current"] = 0 														#Resets streak
+		streak["current"] = 0 													#Resets streak
 
 	trays[pick_tray.upper()] = [0,0]										#Resets the default value for the selected tray
 	counters[pick_counter.upper()] = [0,""]									#Resets the defaul value for the selected counter
