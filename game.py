@@ -339,9 +339,9 @@ def print_Display(name,diffi,vals,quota,streak):							#Prints the Display
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))
 	
 	# Prints the total customers to serve and the quota for the round
-	left = (f'{("Customers to serve: "+str(vals["total"]-vals["count"])).ljust((COL_WIDTH//2-3))}'
+	left = (f'{("Total Customers: "+str(vals["total"]-vals["count"])).ljust((COL_WIDTH//2-3))}'
 		    f'{("Quota for the round: "+str(quota)).rjust(COL_WIDTH//2+3)}')
-	right = (f'{("Customers to serve: "+str(vals["total"]-vals["count"])).ljust((COL_WIDTH//2))}'
+	right = (f'{("Total Customers: "+str(vals["total"]-vals["count"])).ljust((COL_WIDTH//2))}'
 		    f'{("Quota for the round: "+str(quota)).rjust(COL_WIDTH//2+3)}')
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))
 
