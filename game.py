@@ -70,17 +70,17 @@ def counter_System(counters,vals):							#System for the counters
 			if counters[c][0] != 0:
 				vals["count"] += 1
 
-def unsuccessful_Order(counters,streak):					#Function for updating counters when customers patience reach zero
+def unsuccessful_Order(counter,streak):					#Function for updating counters when customers patience reach zero
 	x = 0
-	list_counter=[k for k in counters.keys()]
+	emptyCounter = ""
+	list_counter=[k for k in counter.keys()]
 	for c in list_counter:									#Resets the counter into default when order is unsuccessful
-		if counters[c][0] != 0 and counters[c][1] == 0:
-			counters[c] = [0,""]
+		if counter[c][0] != 0 and counter[c][1] == 0:
+			counter[c] = [0,""]
 			streak["current"] = 0
 			x = 1
-			print("WARNING! Customer at "+c+" walked away!")
-	if x == 1:
-		print("")
+			emptyCounter += (f"{c}, ")
+	return "" if x == 0 else f"WARNING! Customer at Counter {emptyCounter[:-2]} walked away!"
 
 def print_Subcounter(subcounter):								#Prints the counter
 	Noodle_Preference={0:"Empty",
@@ -319,7 +319,7 @@ def print_NextLine():
 def print_Border():
 	print("="*(COL_WIDTH+1)+"|"+"="*(COL_WIDTH+4))
 
-def print_Display(name,diffi,vals,quota,streak):							#Prints the Display
+def print_Display(name,diffi,vals,quota,streak, aivals, aistreak):							#Prints the Display
 
 	# Prints the names of both player and AI
 	print(name.ljust(COL_WIDTH) + ' | ' + "AI".ljust(COL_WIDTH))
@@ -327,21 +327,21 @@ def print_Display(name,diffi,vals,quota,streak):							#Prints the Display
 	# Prints the score and streak of both player and AI
 	left = (f'{("Score: "+str(vals["score"])).ljust((COL_WIDTH//2))}'
 		 	f'{("Streak: "+str(streak["current"])).rjust(COL_WIDTH//2)}')
-	right = (f'{("Score: "+str(vals["score"])).ljust((COL_WIDTH//2))}'
-		  	 f'{("Streak: "+str(streak["current"])).rjust(COL_WIDTH//2+3)}')
+	right = (f'{("Score: "+str(aivals["score"])).ljust((COL_WIDTH//2))}'
+		  	 f'{("Streak: "+str(aistreak["current"])).rjust(COL_WIDTH//2+3)}')
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))
 
 	# Prints the customers to serve and successful orders of both player and AI
 	left = (f'{("Customers to serve: "+str(vals["total"]-vals["count"])).ljust((COL_WIDTH//2))}'
 		    f'{("Successful Orders: "+str(vals["served"])).rjust(COL_WIDTH//2)}')
-	right = (f'{("Customers to serve: "+str(vals["total"]-vals["count"])).ljust((COL_WIDTH//2))}'
-		    f'{("Successful Orders: "+str(vals["served"])).rjust(COL_WIDTH//2+3)}')
+	right = (f'{("Customers to serve: "+str(aivals["total"]-aivals["count"])).ljust((COL_WIDTH//2))}'
+		    f'{("Successful Orders: "+str(aivals["served"])).rjust(COL_WIDTH//2+3)}')
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))
 	
 	# Prints the total customers to serve and the quota for the round
 	left = (f'{("Total Customers: "+str(vals["total"]-vals["count"])).ljust((COL_WIDTH//2-3))}'
 		    f'{("Quota for the round: "+str(quota)).rjust(COL_WIDTH//2+3)}')
-	right = (f'{("Total Customers: "+str(vals["total"]-vals["count"])).ljust((COL_WIDTH//2))}'
+	right = (f'{("Total Customers: "+str(aivals["total"]-aivals["count"])).ljust((COL_WIDTH//2))}'
 		    f'{("Quota for the round: "+str(quota)).rjust(COL_WIDTH//2+3)}')
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))
 
@@ -405,7 +405,7 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 					playerTotal["served"] += playerVals["served"]				#Records the total rounds
 					break
 
-			print_Display(name,diffi,playerVals,quota,playerStreak)				#Prints the display
+			print_Display(name,diffi,playerVals,quota,playerStreak,aiVals,aiStreak)				#Prints the display
 			
 			Game_Menu()															#Prints the game menu
 
@@ -420,6 +420,10 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 
 			os.system("cls")
 
-			unsuccessful_Order(counters,playerStreak)								#Decrements each patience of the customer
+			userCustomerWalkedAwayPrompt = unsuccessful_Order(counters,playerStreak)								#Decrements each patience of the customer and return prompt if user walked away
+			aiCustomerWalkedAwayPrompt = unsuccessful_Order(aiCounters,aiStreak)									#Decrements each patience of the customer and return prompt if user walked away
+			if userCustomerWalkedAwayPrompt or aiCustomerWalkedAwayPrompt:
+				print(userCustomerWalkedAwayPrompt.ljust(COL_WIDTH) + ' | ' + aiCustomerWalkedAwayPrompt.ljust(COL_WIDTH))
+
 	final_score = playerVals["score"]*multiplier									#Multiplies score to the multiplier and stores in a variable
 	return [final_score,name,playerVals["rounds"],diffi]							#returns the following in order: final score, name, rounds, difficulty
