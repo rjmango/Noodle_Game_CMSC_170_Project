@@ -1,9 +1,5 @@
-#Julius M. Manigo Jr.
-#CMSC 12 T14L Laboratory
-#Project
 #Python file for the main process
 
-import ctypes
 from game import *							#Imports everything from the game.py
 import os 									#Imports os library
 os.system("cls")
@@ -130,11 +126,4 @@ def main():
 			print("")
 			
 if __name__ == "__main__":
-	# Get the console window handle
-	hwnd = ctypes.windll.kernel32.GetConsoleWindow()
-
-	# Maximize the window (3 = SW_MAXIMIZE)
-	if hwnd:
-		ctypes.windll.user32.ShowWindow(hwnd, 3)
-	
 	main()

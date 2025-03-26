@@ -1,5 +1,3 @@
-#Julius M. Manigo Jr.
-#CMSC 12 T14L Laboratory
 #Module for the game functions
 
 import random
