@@ -4,10 +4,9 @@ import random
 import os
 import shutil
 
-COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
-counters = {}																	# Counter:[noodle preference,patience]
-trays = {'A':[0,0],'B':[0,0],'C':[0,0], 'D':[0,0], 'E':[0,0], 'F':[0,0]}		# Tray:[Occupied,noodle doneness]
-aiCounters = {}
+counters = {}																	# Counter:[noodle preference, patience]
+trays = {'A':[0,0],'B':[0,0],'C':[0,0], 'D':[0,0], 'E':[0,0], 'F':[0,0]}		# Tray:[Occupied, noodle doneness]
+aiCounters = {}																	# Counter:[noodle preference, patience]
 aiTrays = {'A':[0,0],'B':[0,0],'C':[0,0], 'D':[0,0], 'E':[0,0], 'F':[0,0]}
 
 def Game_Menu():											#Print game Menu
@@ -15,6 +14,7 @@ def Game_Menu():											#Print game Menu
 	print("2 - SERVE noodle bowl")
 	print("3 - DISCARD noodle bowl in the tray")
 	print("4 - WAIT and skip a turn")
+	print("If display is not properly shown, please input R to refresh")
 
 def counter_Preparation(diffi,counters):					#Prepare number of counters based on difficulty and returns the score multiplier
 	letters = "ABCDEF"
@@ -81,6 +81,7 @@ def unsuccessful_Order(counter,streak):					#Function for updating counters when
 	return "" if x == 0 else f"WARNING! Customer at Counter {emptyCounter[:-2]} walked away!"
 
 def print_Subcounter(subcounter):								#Prints the counter
+	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
 	Noodle_Preference={0:"Empty",
 					   1:"Dipped",
 					   2:"Extra_Firm",
@@ -133,6 +134,8 @@ def print_Subcounter(subcounter):								#Prints the counter
 def input_Tray(trays):										#Function for inputing trays
 	while True:
 		Tray_input = input("Choose TRAY to PLACE: ")
+		if Tray_input == "CANCEL":
+			return True
 		if Tray_input.upper() in trays:						#Checks whether tray is occupied
 			if trays[Tray_input.upper()][0] == 1:
 				print("Tray is already occupied")
@@ -141,10 +144,13 @@ def input_Tray(trays):										#Function for inputing trays
 				break
 		else:
 			print("Invalid Input!")
+	return False
 
 def discard_Tray(trays):									#Function for discarding trays
 	while True: 
 		Tray_input = input("Choose TRAY to DISCARD: ")
+		if Tray_input == "CANCEL":
+			return True
 		if Tray_input.upper() in trays:						#Checks whether tray is empty
 			if trays[Tray_input.upper()][0] == 0:
 				print("Tray is already empty")
@@ -153,6 +159,7 @@ def discard_Tray(trays):									#Function for discarding trays
 				break
 		else:
 			print("Invalid Input!")
+	return False
 
 def increment_Tray(trays):									#Increments each tray when occupied
 	for v in trays.values():
@@ -163,6 +170,7 @@ def increment_Tray(trays):									#Increments each tray when occupied
 				v[1] += 1
 
 def print_Subtray(subtray):										#Prints each tray
+	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
 	Noodle_Doneness={"0":"Empty",
 				  	 "1":"Dipped",
 					 "2":"Extra Firm",
@@ -224,28 +232,27 @@ def empty_Tray(trays):										#Empties all tray slots
 def main_Action(trays,counters,vals,quota,streak,diffi,name):	#Function for choosing main action in game
 	while True:
 		action = input("\nChoose action: ")
-		if action == "1":
+		if action == "1":									# Place Noodle
 			if tray_Full(trays) == False:					#Checks if tray is not full
-				input_Tray(trays)							#Inputs a tray in slot
-				break
+				return input_Tray(trays)							#Inputs a tray in slot
 			else:
 				print("Tray is full")
-		elif action == "2":
-			if counter_Empty(counters) == True:				#Checks if all counters are empty
+		elif action == "2":									# Serve Noodle
+			if counter_Empty(counters) == True:				# Checks if all counters are empty
 				print("There are no customers to serve!")
-			elif tray_Empty(trays) == True:					#Checks if all trays are empty
+			elif tray_Empty(trays) == True:					# Checks if all trays are empty
 				print("All of the tray slots are empty! You need to place a noodle bowl first.")
 			else:
-				serve(trays,counters,vals,quota,streak)		#Serves a selected tray slot to a selected counter
-				break
-		elif action == "3":
-			if tray_Empty(trays) == False:					#Checks if all trays are not empty
-				discard_Tray(trays)							#Empties a tray in slot
-				break
+				return serve(trays,counters,vals,quota,streak)		# Serves a selected tray slot to a selected counter
+		elif action == "3":									# Discard Noodle
+			if tray_Empty(trays) == False:					# Checks if all trays are not empty
+				return discard_Tray(trays)					# Empties a tray in slot
 			else:
 				print("Tray is already empty")
-		elif action == "4":
-			break
+		elif action == "4":									# Wait
+			return False
+		elif action == "R" or action == "r":
+			return True
 		else:
 			print("Invalid Action!")
 
@@ -260,6 +267,8 @@ def Quota(diffi,vals):										#Returns the quota depending on the difficulty
 def serve(trays,counters,vals,quota,streak):				#Function for serving
 	while True:												#Tray Entry
 		pick_tray = input("Enter TRAY slot: ")
+		if pick_tray.upper() == "CANCEL":
+			return True
 		if pick_tray.upper() in trays:
 			if trays[pick_tray.upper()][0] == 0:
 				print ("Tray slot is empty")
@@ -288,6 +297,7 @@ def serve(trays,counters,vals,quota,streak):				#Function for serving
 		if vals["score"] > 10:													#Score cannot be negative
 			vals["score"] -= 10													#Subtracts score when order unsuccesful
 		streak["current"] = 0 													#Resets streak
+	return False
 
 	trays[pick_tray.upper()] = [0,0]										#Resets the default value for the selected tray
 	counters[pick_counter.upper()] = [0,""]									#Resets the defaul value for the selected counter
@@ -306,19 +316,22 @@ def game_Over(name,diffi,total,vals,multiplier,streak):						#Prints the journey
 	placeholder = input("Press Enter to continue.")
 
 def print_Header(string):
+	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
 	print_NextLine()
 	out = string.center(25)
 	print(out.ljust(COL_WIDTH) + ' | ' + out.ljust(COL_WIDTH))
 	print_NextLine()
 
 def print_NextLine():
+	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
 	print("".ljust(COL_WIDTH) + ' | ' + "".ljust(COL_WIDTH))
 
 def print_Border():
+	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
 	print("="*(COL_WIDTH+1)+"|"+"="*(COL_WIDTH+4))
 
 def print_Display(name,diffi,vals,quota,streak, aivals, aistreak):							#Prints the Display
-
+	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
 	# Prints the names of both player and AI
 	print(name.ljust(COL_WIDTH) + ' | ' + "AI".ljust(COL_WIDTH))
 	
@@ -354,6 +367,8 @@ def print_Display(name,diffi,vals,quota,streak, aivals, aistreak):							#Prints
 	print_Border()
 
 def game_Function(name,diffi,trays,counters):								#Function for the game
+	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
+	
 	# Player records
 	playerStreak = {"current": 0, "longest": 0}
 	playerVals = {"count": 0, "total": 10, "rounds": 1, "served": 0, "score": 0}
@@ -407,7 +422,9 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 			
 			Game_Menu()															#Prints the game menu
 
-			main_Action(trays,counters,playerVals,quota,playerStreak,diffi,name)			#Calls the function for the main function
+			if main_Action(trays,counters,playerVals,quota,playerStreak,diffi,name):			#Calls the function for the main function
+				os.system('cls')
+				continue
 
 			increment_Tray(trays)															#Increments the tray
 
@@ -425,3 +442,6 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 
 	final_score = playerVals["score"]*multiplier									#Multiplies score to the multiplier and stores in a variable
 	return [final_score,name,playerVals["rounds"],diffi]							#returns the following in order: final score, name, rounds, difficulty
+
+if __name__ == '__main__':
+	pass

@@ -126,4 +126,7 @@ def main():
 			print("")
 			
 if __name__ == "__main__":
+	print("Please open the console in full screen for best experience")
+	input("Press Enter to continue...")
+	os.system("cls")
 	main()
