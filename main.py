@@ -2,10 +2,10 @@
 
 from game import *							#Imports everything from the game.py
 import os 									#Imports os library
-os.system("cls")
+clear_Screen()
 
 def Difficulty():							#Asks and sets the difficulty
-	os.system("cls")
+	clear_Screen()
 	while True:
 		print("="*42)
 		print("\n"+f"{'[CHOOSE DIFFICULTY]':^42}"+"\n")
@@ -68,7 +68,7 @@ def print_Loaded(values):					#Prints the unpacked records
 					values[0].remove(element)
 
 def name_Input():							#Asks for the name and returns it as a value
-	os.system("cls")
+	clear_Screen()
 	while True:
 		name = input("Enter your name? (Must be 1 to 10 characters)\n")		#System will only accepts names less than 11 characters
 		if len(name)>11:
@@ -82,7 +82,7 @@ def guidelines():								#Prints the guidelines for the game
 	line_groups=[6,10,9,10,12,5,7,14]			#Line groups to print at a time
 	f = open('tutorial.txt','r')				#Opens the txt file for the guidelines
 	for x in range(0,8):
-		os.system("cls")
+		clear_Screen()
 		for y in range(0,line_groups[x]):
 			print(f.readline())
 		if x != 7:
@@ -105,28 +105,28 @@ def main():
 			save_Score(record)						#Saves the records to the respective txt file
 
 		elif main_action == "2":
-			os.system("cls")
+			clear_Screen()
 			print_Loaded(load_Scores())				#Prints the records
 			placeholder = input("\nPress Enter to go back")
-			os.system("cls")
+			clear_Screen()
 
 		elif main_action == "3":
-			os.system("cls")
+			clear_Screen()
 			guidelines()							#Prints the guidelines
 			placeholder = input("\nPress Enter to quit tutorial")
-			os.system("cls")
+			clear_Screen()
 
 		elif main_action == "4":
 			print("Thank you for playing!")			#Exits the code.
 			break
 		
 		else:
-			os.system("cls")
+			clear_Screen()
 			print("Invalid input.")
 			print("")
 			
 if __name__ == "__main__":
 	print("Please open the console in full screen for best experience")
 	input("Press Enter to continue...")
-	os.system("cls")
+	clear_Screen()
 	main()

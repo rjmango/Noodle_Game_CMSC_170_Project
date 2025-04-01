@@ -303,7 +303,7 @@ def serve(trays,counters,vals,quota,streak):				#Function for serving
 	counters[pick_counter.upper()] = [0,""]									#Resets the defaul value for the selected counter
 
 def game_Over(name,diffi,total,vals,multiplier,streak):						#Prints the journey of the customer when game over
-	os.system("cls")
+	clear_Screen()
 	print("Summary of", name+"'s journey","\n")
 	print("="*45)
 	print("Difficulty:", diffi)
@@ -314,6 +314,9 @@ def game_Over(name,diffi,total,vals,multiplier,streak):						#Prints the journey
 	print("Final Score:",vals["score"]*multiplier)
 	print("="*45 + "\n")
 	placeholder = input("Press Enter to continue.")
+
+def generateCustomers(totalCustomers):
+	return [random.randint(0, 7) for _ in range(totalCustomers)]	#Generates a list of customers with random preferences
 
 def print_Header(string):
 	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
@@ -329,6 +332,13 @@ def print_NextLine():
 def print_Border():
 	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
 	print("="*(COL_WIDTH+1)+"|"+"="*(COL_WIDTH+4))
+
+def clear_Screen():
+	if os.name == 'nt':  # Windows
+		os.system('cls')
+	else:  # Mac and Linux
+		os.system('clear')
+
 
 def print_Display(name,diffi,vals,quota,streak, aivals, aistreak):							#Prints the Display
 	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
@@ -389,12 +399,13 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 			break
 
 		quota = Quota(diffi,playerVals)											#Stores the quota
-		os.system("cls")
+		customers = generateCustomers()
+		clear_Screen()
 
 		while True:
 			if playerVals["count"] == playerVals["total"] and counter_Empty(counters) == True:			#If max count of customers, the round ends
 				if playerVals["served"] < quota:														#Checks if customers served does reaches the quota
-					os.system("cls")
+					clear_Screen()
 					print("Level Failed!\nYou failed to reach the required number of successful orders.")
 					proceed = 0													#Sets the player elligible for next round
 					empty_Tray(trays)											#Empties the tray
@@ -404,7 +415,7 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 					break
 
 				else:
-					os.system("cls")
+					clear_Screen()
 					print("Level Completed!\nPreparing the next level.")
 					placeholder = input("Press ENTER to continue.")
 					empty_Tray(trays)
@@ -423,7 +434,7 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 			Game_Menu()															#Prints the game menu
 
 			if main_Action(trays,counters,playerVals,quota,playerStreak,diffi,name):			#Calls the function for the main function
-				os.system('cls')
+				clear_Screen()
 				continue
 
 			increment_Tray(trays)															#Increments the tray
@@ -433,7 +444,7 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 
 			input("\nPress ENTER to continue.")
 
-			os.system("cls")
+			clear_Screen()
 
 			userCustomerWalkedAwayPrompt = unsuccessful_Order(counters,playerStreak)								#Decrements each patience of the customer and return prompt if user walked away
 			aiCustomerWalkedAwayPrompt = unsuccessful_Order(aiCounters,aiStreak)									#Decrements each patience of the customer and return prompt if user walked away
