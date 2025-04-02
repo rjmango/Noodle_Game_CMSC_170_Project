@@ -10,12 +10,14 @@ trays = {'A':[0,0],'B':[0,0],'C':[0,0], 'D':[0,0], 'E':[0,0], 'F':[0,0]}		# Tray
 aiCounters = {}																	# Counter:[noodle preference, patience]
 aiTrays = {'A':[0,0],'B':[0,0],'C':[0,0], 'D':[0,0], 'E':[0,0], 'F':[0,0]}
 
-def Game_Menu():											#Print game Menu
-	print("1 - PLACE noodle bowl in the tray")
-	print("2 - SERVE noodle bowl")
-	print("3 - DISCARD noodle bowl in the tray")
-	print("4 - WAIT and skip a turn")
+def Game_Menu(Prompt):											#Print game Menu
+	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
+	print("1 - PLACE noodle bowl in the tray".ljust(COL_WIDTH) + ' | ' + Prompt.ljust(COL_WIDTH))
+	print("2 - SERVE noodle bowl".ljust(COL_WIDTH) + ' | ' + "".ljust(COL_WIDTH))
+	print("3 - DISCARD noodle bowl in the tray".ljust(COL_WIDTH) + ' | ' + "".ljust(COL_WIDTH))
+	print("4 - WAIT and skip a turn".ljust(COL_WIDTH) + ' | ' + "".ljust(COL_WIDTH))
 	print("If display is not properly shown, please input R to refresh")
+	print("Once action is chosen (Place, Serve, or Discard),\ninput \"CANCEL\" to cancel the operation")
 
 def counter_Preparation(diffi,counters):					#Prepare number of counters based on difficulty and returns the score multiplier
 	letters = "ABCDEF"
@@ -401,6 +403,7 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 
 		quota = Quota(diffi,playerVals)											#Stores the quota
 		customers = generateCustomers(playerTotal["count"])
+		aiMovePrompt = ""
 		clear_Screen()
 
 		while True:
@@ -430,14 +433,15 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 					playerTotal["served"] += playerVals["served"]				#Records the total rounds
 					break
 
-			print_Display(name,diffi,playerVals,quota,playerStreak,aiVals,aiStreak)				#Prints the display
+			print_Display(name,diffi,playerVals,quota,playerStreak,aiVals,aiStreak)			#Prints the display
 			
-			Game_Menu()															#Prints the game menu
+			Game_Menu(aiMovePrompt)																		#Prints the game menu
 
 			if main_Action(trays,counters,playerVals,quota,playerStreak,diffi,name):		#Calls the function for the main function
 				clear_Screen()
 				continue
-			improvedAI.ai_decision(aiCounters, aiTrays, aiVals, quota, aiStreak)			#AI decision making
+			aiMovePrompt = improvedAI.ai_decision(aiCounters, aiTrays, aiVals, quota, aiStreak)			#AI decision making | returns a prompt on what move the AI did
+			
 			increment_Tray(trays)															#Increments the tray
 			increment_Tray(aiTrays)															#Increments the tray
 
