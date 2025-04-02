@@ -19,9 +19,8 @@ def Game_Menu(Prompt):											#Print game Menu
 	print("If display is not properly shown, please input R to refresh")
 	print("Once action is chosen (Place, Serve, or Discard),\ninput \"CANCEL\" to cancel the operation")
 
-def counter_Preparation(diffi,counters):					#Prepare number of counters based on difficulty and returns the score multiplier
+def counter_Preparation(diffi,counters, aiCounters):					#Prepare number of counters based on difficulty and returns the score multiplier
 	letters = "ABCDEF"
-	
 	if diffi == "EASY":
 		x = 3
 		for k in range(0,x):
@@ -319,7 +318,7 @@ def game_Over(name,diffi,total,vals,multiplier,streak):						#Prints the journey
 	clear_Screen()
 
 def generateCustomers(totalCustomers):
-	return [random.randint(0, 7) for _ in range(totalCustomers)]	#Generates a list of customers with random preferences
+	return [random.randint(1, 7) for _ in range(totalCustomers)]	#Generates a list of customers with random preferences
 
 def print_Header(string):
 	COL_WIDTH =  int(shutil.get_terminal_size().columns // 2) - 3
@@ -363,9 +362,9 @@ def print_Display(name,diffi,vals,quota,streak, aivals, aistreak):							#Prints
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))
 	
 	# Prints the total customers to serve and the quota for the round
-	left = (f'{("Total Customers: "+str(vals["total"]-vals["count"])).ljust((COL_WIDTH//2-3))}'
+	left = (f'{("Total Customers: "+str(vals["total"])).ljust((COL_WIDTH//2-3))}'
 		    f'{("Quota for the round: "+str(quota)).rjust(COL_WIDTH//2+3)}')
-	right = (f'{("Total Customers: "+str(aivals["total"]-aivals["count"])).ljust((COL_WIDTH//2))}'
+	right = (f'{("Total Customers: "+str(aivals["total"])).ljust((COL_WIDTH//2))}'
 		    f'{("Quota for the round: "+str(quota)).rjust(COL_WIDTH//2+3)}')
 	print(left.ljust(COL_WIDTH) + ' | ' + right.ljust(COL_WIDTH))
 
@@ -393,10 +392,9 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 	aiTotal = {"count": 0, "served": 0}
 
 	# ingame variables
-	multiplier = counter_Preparation(diffi,counters)						#Stores the final score multiplier
+	multiplier = counter_Preparation(diffi,counters,aiCounters)				#Stores the final score multiplier and prepares
 	proceed = 1 															#Indicator whether or whether you can proceed next round.
 	while True:
-
 		if proceed == 0:													#Ends the game when proceed is 0
 			game_Over(name,diffi,playerTotal,playerVals,multiplier,playerStreak)				#Prints the players summary of journey
 			break
@@ -407,12 +405,17 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 		clear_Screen()
 
 		while True:
-			if playerVals["count"] == playerVals["total"] and counter_Empty(counters) == True:			#If max count of customers, the round ends
-				if playerVals["served"] < quota:														#Checks if customers served does reaches the quota
+			if playerVals["count"] == playerVals["total"] and counter_Empty(counters) == True and aiVals["count"] == aiVals["total"] and counter_Empty(aiCounters):			#If max count of customers, the round ends
+				if playerVals["served"] < quota or playerVals["score"] < aiVals["score"]:														#Checks if customers served does reaches the quota
 					clear_Screen()
-					print("Level Failed!\nYou failed to reach the required number of successful orders.")
+					if playerVals["score"] < aiVals["score"]:
+						prompt = "AI scored a higher score, better luck next time!" 
+					else:
+						prompt = "You failed to reach the required number of successful orders." 
+					print(f"Level Failed!\n{prompt}")
 					proceed = 0													#Sets the player elligible for next round
 					empty_Tray(trays)											#Empties the tray
+					empty_Tray(aiTrays)
 					playerTotal["count"] += playerVals["count"]					#Records the total count of customers
 					playerTotal["served"] += playerVals["served"]				#Records the total rounds
 					placeholder = input("Press ENTER to continue.")
@@ -424,6 +427,12 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 					placeholder = input("Press ENTER to continue.")
 					empty_Tray(trays)
 					playerVals = {	"count": 0, 								#updates the Count, Total, Rounds, Served, and Score
+				   					"total": playerVals["total"]+5,
+									"rounds": playerVals["rounds"]+1,
+									"served": 0,
+									"score": playerVals["score"]
+								}
+					aiVals = {	"count": 0, 								#updates the Count, Total, Rounds, Served, and Score
 				   					"total": playerVals["total"]+5,
 									"rounds": playerVals["rounds"]+1,
 									"served": 0,
