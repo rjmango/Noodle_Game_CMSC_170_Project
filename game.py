@@ -3,6 +3,7 @@
 import random
 import os
 import shutil
+import improvedAI
 
 counters = {}																	# Counter:[noodle preference, patience]
 trays = {'A':[0,0],'B':[0,0],'C':[0,0], 'D':[0,0], 'E':[0,0], 'F':[0,0]}		# Tray:[Occupied, noodle doneness]
@@ -180,7 +181,6 @@ def print_Subtray(subtray):										#Prints each tray
 					 "6":"Extra Soft",
 					 "7":"Overcooked"
 					}
-
 	left = ""
 	right = ""
 	for tray in subtray:								#Visual design for each counter
@@ -297,10 +297,10 @@ def serve(trays,counters,vals,quota,streak):				#Function for serving
 		if vals["score"] > 10:													#Score cannot be negative
 			vals["score"] -= 10													#Subtracts score when order unsuccesful
 		streak["current"] = 0 													#Resets streak
-	return False
 
 	trays[pick_tray.upper()] = [0,0]										#Resets the default value for the selected tray
 	counters[pick_counter.upper()] = [0,""]									#Resets the defaul value for the selected counter
+	return False
 
 def game_Over(name,diffi,total,vals,multiplier,streak):						#Prints the journey of the customer when game over
 	clear_Screen()
@@ -314,6 +314,7 @@ def game_Over(name,diffi,total,vals,multiplier,streak):						#Prints the journey
 	print("Final Score:",vals["score"]*multiplier)
 	print("="*45 + "\n")
 	placeholder = input("Press Enter to continue.")
+	clear_Screen()
 
 def generateCustomers(totalCustomers):
 	return [random.randint(0, 7) for _ in range(totalCustomers)]	#Generates a list of customers with random preferences
@@ -399,7 +400,7 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 			break
 
 		quota = Quota(diffi,playerVals)											#Stores the quota
-		customers = generateCustomers()
+		customers = generateCustomers(playerTotal["count"])
 		clear_Screen()
 
 		while True:
@@ -433,11 +434,12 @@ def game_Function(name,diffi,trays,counters):								#Function for the game
 			
 			Game_Menu()															#Prints the game menu
 
-			if main_Action(trays,counters,playerVals,quota,playerStreak,diffi,name):			#Calls the function for the main function
+			if main_Action(trays,counters,playerVals,quota,playerStreak,diffi,name):		#Calls the function for the main function
 				clear_Screen()
 				continue
-
+			improvedAI.ai_decision(aiCounters, aiTrays, aiVals, quota, aiStreak)			#AI decision making
 			increment_Tray(trays)															#Increments the tray
+			increment_Tray(aiTrays)															#Increments the tray
 
 			counter_System(counters,playerVals)												#Carries out the function for the system of counters
 			counter_System(aiCounters,aiVals)												#Carries out the function for the system of counters
